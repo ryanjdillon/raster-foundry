@@ -10,6 +10,24 @@
   </div>
 </div>
 <div class="input-node-item">
+  <div class="input-node-label">Layer</div>
+  <div class="input-data form-group all-in-one no-margin">
+    <div class="flex-fill input-node-input-label">
+      <span ng-show="!$ctrl.selectedLayer">Select a Layer</span>
+      {{$ctrl.selectedLayer.name | limitTo : 18}}
+      <span ng-show="$ctrl.selectedLayer.name.length > 18">...</span>
+    </div>
+    <button
+      type="button"
+      class="btn btn-flat"
+      ng-click="$ctrl.selectLayerModal()"
+      ng-disabled="!$ctrl.selectedProject"
+    >
+      Change
+    </button>
+  </div>
+</div>
+<div class="input-node-item">
   <div class="input-node-label">Band</div>
   <div class="input-data form-group no-margin">
     <rf-band-select selected-band="$ctrl.selectedBand"
