@@ -8,7 +8,10 @@ const ProjectItemComponent = {
     controller: 'ProjectItemController',
     transclude: true,
     bindings: {
-        project: '<',
+        // item is project if isLayer is not provided
+        // item is project layer if isLayer is true
+        // parentProject is the project the layer is in
+        item: '<',
         selected: '&',
         onSelect: '&',
         slim: '<',
@@ -44,20 +47,20 @@ class ProjectItemController {
     $onInit() {
         this.isSelectable = this.$attrs.hasOwnProperty('selectable');
         this.$scope.$watch(
-            () => this.selected({ project: this.project }),
+            () => this.selected({ project: this.item }),
             selected => {
                 this.selectedStatus = selected;
             }
         );
-        this.mapId = `${this.project.id}-map`;
+        this.mapId = `${this.item.id}-map`;
 
         this.showProjectThumbnail = !this.featureFlags.isOnByDefault('project-preview-mini-map');
 
         this.getProjectStatus();
-        if (!this.user || this.hideOptions) {
+        if (!this.user || this.hideOptions || this.isLayer) {
             this.permissions = [];
         } else {
-            this.projectService.getProjectPermissions(this.project, this.user).then(permissions => {
+            this.projectService.getProjectPermissions(this.item, this.user).then(permissions => {
                 this.permissions = permissions;
             });
         }
@@ -69,14 +72,14 @@ class ProjectItemController {
 
     getThumbnailURL() {
         this.thumbnailUrl = this.projectService.getProjectThumbnailURL(
-            this.project,
+            this.item,
             this.authService.token()
         );
     }
 
     addProjectTile() {
         const layer = L.tileLayer(
-            this.projectService.getProjectTileURL(this.project, {
+            this.projectService.getProjectTileURL(this.item, {
                 token: this.authService.token()
             })
         );
@@ -87,8 +90,7 @@ class ProjectItemController {
     }
 
     addProjectLayerTile() {
-        // this.project is actually a project layer in this case
-        const layer = this.projectService.mapLayerFromLayer(this.parentProject, this.project);
+        const layer = this.projectService.mapLayerFromLayer(this.parentProject, this.item);
         this.getMap().then(m => {
             m.addLayer('share-layer', layer);
         });
@@ -96,17 +98,16 @@ class ProjectItemController {
 
     fitProjectExtent() {
         this.getMap().then(mapWrapper => {
-            this.mapUtilsService.fitMapToProject(mapWrapper, this.project, -2);
+            this.mapUtilsService.fitMapToProject(mapWrapper, this.item, -2);
             mapWrapper.map.invalidateSize();
         });
     }
 
     fitProjectLayerExtent() {
-        // this.project is actually a project layer in this case
         this.getMap().then(mapWrapper => {
             this.mapUtilsService.fitMapToProjectLayer(
                 mapWrapper,
-                this.project,
+                this.item,
                 this.parentProject,
                 -2
             );
@@ -115,16 +116,15 @@ class ProjectItemController {
     }
 
     toggleSelected(event) {
-        this.onSelect({ project: this.project, selected: !this.selectedStatus });
+        this.onSelect({ project: this.item, selected: !this.selectedStatus });
         event.stopPropagation();
     }
 
     getProjectStatus() {
         if (!this.statusFetched) {
             if (this.isLayer) {
-                // this.project is actually a project layer in this case
                 this.projectService
-                    .getProjectLayerStatus(this.parentProject.id, this.project.id)
+                    .getProjectLayerStatus(this.parentProject.id, this.item.id)
                     .then(status => {
                         this.status = status;
                         if (this.status === 'CURRENT') {
@@ -138,7 +138,7 @@ class ProjectItemController {
                         }
                     });
             } else {
-                this.projectService.getProjectStatus(this.project.id).then(status => {
+                this.projectService.getProjectStatus(this.item.id).then(status => {
                     this.status = status;
                     if (this.status === 'CURRENT') {
                         this.fitProjectExtent();
@@ -161,9 +161,9 @@ class ProjectItemController {
             .open({
                 component: 'rfProjectPublishModal',
                 resolve: {
-                    project: () => this.project,
-                    tileUrl: () => this.projectService.getProjectTileURL(this.project),
-                    shareUrl: () => this.projectService.getProjectShareURL(this.project)
+                    project: () => this.item,
+                    tileUrl: () => this.projectService.getProjectTileURL(this.item),
+                    shareUrl: () => this.projectService.getProjectShareURL(this.item)
                 }
             })
             .result.catch(() => {});
@@ -208,7 +208,7 @@ class ProjectItemController {
 
         modal.result
             .then(() => {
-                this.projectService.deleteProject(this.project.id).then(
+                this.projectService.deleteProject(this.item.id).then(
                     () => {
                         this.$state.reload();
                     },

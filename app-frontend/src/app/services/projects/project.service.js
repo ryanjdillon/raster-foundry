@@ -625,7 +625,6 @@ export default app => {
             let queryParams = params || {};
             queryParams.tag = new Date().getTime();
             let formattedParams = L.Util.getParamString(queryParams);
-            console.log(`${this.tileServer}/${projectId}/{z}/{x}/{y}/${formattedParams}`);
             return `${this.tileServer}/${projectId}/{z}/{x}/{y}/${formattedParams}`;
         }
 
