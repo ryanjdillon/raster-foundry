@@ -29,6 +29,7 @@
 - Made templates editable except for their formulas [\#4729](https://github.com/raster-foundry/raster-foundry/pull/4729)
 - Added project analyses edit modal for v2 UI [\#4709](https://github.com/raster-foundry/raster-foundry/pull/4709)
 - Added query parameter to limit scene search by layer AOI and updated filters on the frontend [\#4733](https://github.com/raster-foundry/raster-foundry/pull/4733)
+- Enabled project layer selection in lab input raster nodes [\#4732](https://github.com/raster-foundry/raster-foundry/pull/4732)
 
 ### Changed
 
@@ -1358,7 +1359,7 @@
 - Include scene post body params [\#2264](https://github.com/raster-foundry/raster-foundry/pull/2264)
 - Add lab map component and use in lab2 [\#2263](https://github.com/raster-foundry/raster-foundry/pull/2263)
 - Tune Slick/Hikari database configuration [\#2259](https://github.com/raster-foundry/raster-foundry/pull/2259)
-- Fix undefined $log [\#2258](https://github.com/raster-foundry/raster-foundry/pull/2258)
+- Fix undefined \$log [\#2258](https://github.com/raster-foundry/raster-foundry/pull/2258)
 - Remove extra export options [\#2252](https://github.com/raster-foundry/raster-foundry/pull/2252)
 - Allow deleting already shared projects [\#2249](https://github.com/raster-foundry/raster-foundry/pull/2249)
 - Feature/lk/operation node body [\#2239](https://github.com/raster-foundry/raster-foundry/pull/2239)
