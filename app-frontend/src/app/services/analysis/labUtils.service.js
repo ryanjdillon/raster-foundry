@@ -254,7 +254,12 @@ export default app => {
                 }
 
                 // Input nodes not of the layer type are not made into rectangles
-                if (!input.type || input.type === 'projectSrc' || input.type === 'const') {
+                if (
+                    !input.type ||
+                    input.type === 'projectSrc' ||
+                    input.type === 'const' ||
+                    input.type === 'layerSrc'
+                ) {
                     let rectAttrs = this.getNodeAttributes(input);
 
                     rectangle = this.constructRect(
