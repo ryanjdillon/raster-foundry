@@ -1,4 +1,5 @@
 import angular from 'angular';
+import { get } from 'lodash';
 
 import projectPlaceholder from '../../../../assets/images/transparent.svg';
 import projectItemTpl from './projectItem.html';
@@ -37,6 +38,7 @@ class ProjectItemController {
         authService,
         modalService,
         permissionsService,
+        userService,
         featureFlags
     ) {
         'ngInject';
@@ -56,7 +58,10 @@ class ProjectItemController {
 
         this.showProjectThumbnail = !this.featureFlags.isOnByDefault('project-preview-mini-map');
 
+        this.ownerAvatarUrl = '';
+        this.getOwnerAvatarUrl();
         this.getProjectStatus();
+
         if (!this.user || this.hideOptions || this.isLayer) {
             this.permissions = [];
         } else {
@@ -218,6 +223,18 @@ class ProjectItemController {
                 );
             })
             .catch(() => {});
+    }
+
+    getOwnerAvatarUrl() {
+        const owner = get(this, 'item.owner') || get(this, 'parentProject.owner');
+        this.ownerAvatarUrl = owner.profileImageUri;
+        if (!this.ownerAvatarUrl && typeof owner === 'string') {
+            this.userService.getUserById(owner).then(user => {
+                // we do not sanitize user profile image
+                // so getting it from a shared project owner should work
+                this.ownerAvatarUrl = user.profileImageUri;
+            });
+        }
     }
 }
 

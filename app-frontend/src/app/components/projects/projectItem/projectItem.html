@@ -9,8 +9,8 @@
         <a ui-sref="projects.edit.scenes({projectid: $ctrl.item.id})" class="no-hover">
             <img
                 class="avatar tiny"
-                ng-attr-src="{{ $ctrl.item.owner.profileImageUri }}"
-                ng-if="$ctrl.item.owner.profileImageUri"
+                ng-attr-src="{{ $ctrl.ownerAvatarUrl }}"
+                ng-if="$ctrl.ownerAvatarUrl"
             />
             <h4 class="project-title" data-title="{{$ctrl.item.name}}">{{$ctrl.item.name}}</h4>
         </a>
@@ -84,8 +84,8 @@
         ></rf-status-tag>
         <img
             class="avatar tiny"
-            ng-attr-src="{{ $ctrl.item.owner.profileImageUri }}"
-            ng-if="$ctrl.item.owner.profileImageUri"
+            ng-attr-src="{{ $ctrl.ownerAvatarUrl }}"
+            ng-if="$ctrl.ownerAvatarUrl"
         />
         <h4 class="project-title" data-title="{{$ctrl.item.name}}">{{$ctrl.item.name}}</h4>
         <div class="project-preview">
